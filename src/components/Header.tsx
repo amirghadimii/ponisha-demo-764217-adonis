@@ -151,8 +151,9 @@ export const Header: React.FC<HeaderProps> = ({ onOpenConsultation }) => {
               <Phone className="w-5 h-5" />
             </a>
             <button
+              id="mobile-menu-toggle-btn"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 transition-colors focus:outline-none"
+              className="p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 transition-colors focus:outline-none cursor-pointer"
               aria-label="باز کردن منوی موبایل"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -164,7 +165,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenConsultation }) => {
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden fixed inset-x-0 top-[65px] bg-slate-950/95 backdrop-blur-xl border-b border-slate-800 shadow-2xl px-5 py-6 transition-all duration-300 max-h-[calc(100vh-70px)] overflow-y-auto">
+        <div id="mobile-drawer-menu" className="lg:hidden fixed inset-x-0 top-[65px] bg-slate-950/95 backdrop-blur-xl border-b border-slate-800 shadow-2xl px-5 py-6 transition-all duration-300 max-h-[calc(100vh-70px)] overflow-y-auto">
           <div className="space-y-1.5 pb-4">
             {navLinks.map((link) => {
               const Icon = link.icon;
@@ -172,11 +173,12 @@ export const Header: React.FC<HeaderProps> = ({ onOpenConsultation }) => {
                 <a
                   key={link.href}
                   href={link.href}
+                  data-testid="mobile-nav-link"
                   onClick={(e) => {
                     e.preventDefault();
                     handleNavClick(link.href);
                   }}
-                  className="flex items-center justify-between px-3.5 py-3 rounded-xl text-slate-200 hover:bg-slate-900 hover:text-amber-400 transition-colors"
+                  className="flex items-center justify-between px-3.5 py-3 rounded-xl text-slate-200 hover:bg-slate-900 hover:text-amber-400 transition-colors cursor-pointer"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center text-amber-400">

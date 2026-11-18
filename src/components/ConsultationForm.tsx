@@ -50,7 +50,7 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({ initialData 
   
   // Jalali Date State
   const [jalaliYear, setJalaliYear] = useState(1405);
-  const [jalaliMonth, setJalaliMonth] = useState(2); // اردیبهشت (0-indexed 1)
+  const [jalaliMonth, setJalaliMonth] = useState(2); // اردیبهشت (0-indexed 2 -> خرداد)
   const [jalaliDay, setJalaliDay] = useState(15);
   const [timeSlot, setTimeSlot] = useState<'morning' | 'afternoon'>('morning');
   const [description, setDescription] = useState(
@@ -97,7 +97,7 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({ initialData 
       setIsSubmitting(false);
       const randomCode = `AD-${Math.floor(10000 + Math.random() * 90000)}`;
       setTrackingCode(randomCode);
-    }, 1200);
+    }, 350);
   };
 
   const handleCopyCode = () => {
@@ -118,8 +118,10 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({ initialData 
   return (
     <section id="consultation" className="py-20 relative bg-slate-950 border-t border-slate-800">
       {/* Background radial glow */}
-      <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/2 right-0 -translate-y-1/2 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-0 -translate-y-1/2 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl" />
+      </div>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
@@ -142,7 +144,7 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({ initialData 
           
           {trackingCode ? (
             /* Success State View */
-            <div className="py-6 text-center space-y-6 animate-in fade-in zoom-in-95 duration-300">
+            <div id="consultation-success-view" className="py-6 text-center space-y-6 animate-in fade-in zoom-in-95 duration-300">
               <div className="w-16 h-16 rounded-3xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/20">
                 <CheckCircle2 className="w-8 h-8" />
               </div>
@@ -163,12 +165,13 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({ initialData 
               <div className="max-w-md mx-auto p-4 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-between">
                 <div className="text-right">
                   <span className="text-[11px] text-slate-400 block">شماره پیگیری اختصاصی پرونده:</span>
-                  <span className="text-xl font-black text-amber-400 font-mono tracking-wider">
+                  <span id="tracking-code-display" className="text-xl font-black text-amber-400 font-mono tracking-wider">
                     {trackingCode}
                   </span>
                 </div>
                 <button
                   type="button"
+                  id="copy-tracking-code-btn"
                   onClick={handleCopyCode}
                   className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
                 >
@@ -215,6 +218,7 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({ initialData 
               <div className="pt-4 flex flex-col sm:flex-row gap-3 justify-center">
                 <button
                   type="button"
+                  id="reset-form-btn"
                   onClick={handleReset}
                   className="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold flex items-center justify-center gap-2 transition-colors cursor-pointer"
                 >
@@ -234,7 +238,7 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({ initialData 
             </div>
           ) : (
             /* Interactive Consultation Form */
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form id="consultation-form" onSubmit={handleSubmit} className="space-y-6">
               
               {/* Row 1: Name & Mobile */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -247,6 +251,7 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({ initialData 
                     <span className="text-rose-400">*</span>
                   </label>
                   <input
+                    id="consultation-fullname"
                     type="text"
                     value={fullName}
                     onChange={(e) => {
@@ -259,7 +264,7 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({ initialData 
                     }`}
                   />
                   {errors.fullName && (
-                    <p className="text-[11px] text-rose-400 flex items-center gap-1 mt-1">
+                    <p id="fullname-error" className="text-[11px] text-rose-400 flex items-center gap-1 mt-1">
                       <AlertCircle className="w-3 h-3 shrink-0" />
                       <span>{errors.fullName}</span>
                     </p>
@@ -274,6 +279,7 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({ initialData 
                     <span className="text-rose-400">*</span>
                   </label>
                   <input
+                    id="consultation-mobile"
                     type="tel"
                     value={mobile}
                     onChange={(e) => {
@@ -287,7 +293,7 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({ initialData 
                     }`}
                   />
                   {errors.mobile && (
-                    <p className="text-[11px] text-rose-400 flex items-center gap-1 mt-1">
+                    <p id="mobile-error-message" className="text-[11px] text-rose-400 flex items-center gap-1 mt-1 font-semibold">
                       <AlertCircle className="w-3 h-3 shrink-0" />
                       <span>{errors.mobile}</span>
                     </p>
@@ -307,6 +313,7 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({ initialData 
                     <span className="text-rose-400">*</span>
                   </label>
                   <select
+                    id="consultation-city"
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-amber-500 transition-colors"
@@ -326,6 +333,7 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({ initialData 
                     <span>نوع کاربری و ملک:</span>
                   </label>
                   <select
+                    id="consultation-building-type"
                     value={buildingType}
                     onChange={(e) => setBuildingType(e.target.value)}
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-amber-500 transition-colors"
@@ -347,6 +355,7 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({ initialData 
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-slate-300 block">نوع سیستم مد نظر:</label>
                   <select
+                    id="consultation-grid-type"
                     value={gridType}
                     onChange={(e) => setGridType(e.target.value as any)}
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-3 text-xs text-white focus:outline-none focus:border-amber-500 transition-colors"
@@ -361,6 +370,7 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({ initialData 
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-slate-300 block">مساحت تقریبی سقف (m²):</label>
                   <input
+                    id="consultation-area"
                     type="number"
                     value={area}
                     onChange={(e) => setArea(e.target.value)}
@@ -373,6 +383,7 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({ initialData 
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-slate-300 block">ظرفیت مد نظر (کیلووات):</label>
                   <input
+                    id="consultation-capacity"
                     type="number"
                     value={targetCapacity}
                     onChange={(e) => setTargetCapacity(e.target.value)}
@@ -390,7 +401,7 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({ initialData 
                     <Calendar className="w-4 h-4 text-amber-400" />
                     <span>انتخاب تاریخ ترجیحی بازدید کارشناسی (تقویم شمسی جلالی):</span>
                   </span>
-                  <span className="text-[11px] text-amber-400 font-bold">
+                  <span id="selected-jalali-date-label" className="text-[11px] text-amber-400 font-bold">
                     {toPersianDigits(jalaliDay)} {JALALI_MONTHS[jalaliMonth]} {toPersianDigits(jalaliYear)}
                   </span>
                 </div>
@@ -400,6 +411,7 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({ initialData 
                   <div className="space-y-1">
                     <span className="text-[10px] text-slate-400 block">روز:</span>
                     <select
+                      id="jalali-day-select"
                       value={jalaliDay}
                       onChange={(e) => setJalaliDay(Number(e.target.value))}
                       className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500 font-mono"
@@ -416,6 +428,7 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({ initialData 
                   <div className="space-y-1">
                     <span className="text-[10px] text-slate-400 block">ماه:</span>
                     <select
+                      id="jalali-month-select"
                       value={jalaliMonth}
                       onChange={(e) => setJalaliMonth(Number(e.target.value))}
                       className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
@@ -432,6 +445,7 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({ initialData 
                   <div className="space-y-1">
                     <span className="text-[10px] text-slate-400 block">سال:</span>
                     <select
+                      id="jalali-year-select"
                       value={jalaliYear}
                       onChange={(e) => setJalaliYear(Number(e.target.value))}
                       className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500 font-mono"
@@ -448,6 +462,7 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({ initialData 
                   <div className="grid grid-cols-2 gap-3">
                     <button
                       type="button"
+                      id="timeslot-morning-btn"
                       onClick={() => setTimeSlot('morning')}
                       className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-bold border transition-colors cursor-pointer ${
                         timeSlot === 'morning'
@@ -461,6 +476,7 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({ initialData 
 
                     <button
                       type="button"
+                      id="timeslot-afternoon-btn"
                       onClick={() => setTimeSlot('afternoon')}
                       className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-bold border transition-colors cursor-pointer ${
                         timeSlot === 'afternoon'
@@ -482,6 +498,7 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({ initialData 
                   توضیحات تکمیلی یا آدرس دقیق پروژه (اختیاری):
                 </label>
                 <textarea
+                  id="consultation-description"
                   rows={3}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
@@ -493,6 +510,7 @@ export const ConsultationForm: React.FC<ConsultationFormProps> = ({ initialData 
               {/* Submit Button */}
               <button
                 type="submit"
+                id="consultation-submit-btn"
                 disabled={isSubmitting}
                 className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-base shadow-xl shadow-amber-500/20 hover:shadow-amber-500/40 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98 disabled:opacity-50"
               >

@@ -79,7 +79,7 @@ export default function RootLayout({
       <head>
         <JsonLd />
       </head>
-      <body className="min-h-screen flex flex-col bg-slate-950 text-slate-100 antialiased selection:bg-amber-500 selection:text-slate-950">
+      <body className="min-h-screen flex flex-col bg-slate-950 text-slate-100 antialiased selection:bg-amber-500 selection:text-slate-950 overflow-x-hidden w-full max-w-full">
         {children}
       </body>
     </html>

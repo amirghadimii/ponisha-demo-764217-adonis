@@ -38,8 +38,8 @@ export const Hero: React.FC<HeroProps> = ({ onOpenConsultation }) => {
     <section id="hero" className="relative min-h-[92vh] flex items-center pt-28 pb-16 overflow-hidden">
       {/* Background Gradient & Glow Effects */}
       <div className="absolute inset-0 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 pointer-events-none" />
-      <div className="absolute top-1/4 -right-48 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none animate-pulse-slow" />
-      <div className="absolute bottom-1/4 -left-48 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none animate-pulse-slow" />
+      <div className="absolute top-1/4 right-0 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none animate-pulse-slow" />
+      <div className="absolute bottom-1/4 left-0 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none animate-pulse-slow" />
       <div className="absolute inset-0 solar-grid-pattern opacity-60 pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10">

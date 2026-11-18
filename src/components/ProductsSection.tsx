@@ -95,7 +95,9 @@ export const ProductsSection: React.FC<ProductsSectionProps> = ({
           {filteredProducts.map((product) => (
             <div
               key={product.id}
-              className="group rounded-3xl bg-slate-900/80 border border-slate-800/90 hover:border-amber-500/40 transition-all duration-300 overflow-hidden flex flex-col shadow-xl hover:shadow-2xl hover:shadow-amber-500/5 hover:-translate-y-1"
+              data-testid="product-card"
+              onClick={() => setActiveModalProduct(product)}
+              className="group rounded-3xl bg-slate-900/80 border border-slate-800/90 hover:border-amber-500/40 transition-all duration-300 overflow-hidden flex flex-col shadow-xl hover:shadow-2xl hover:shadow-amber-500/5 hover:-translate-y-1 cursor-pointer"
             >
               {/* Product Image Area */}
               <div className="relative aspect-16/10 overflow-hidden bg-slate-950">
@@ -172,7 +174,11 @@ export const ProductsSection: React.FC<ProductsSectionProps> = ({
 
                   <div className="grid grid-cols-2 gap-2">
                     <button
-                      onClick={() => setActiveModalProduct(product)}
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setActiveModalProduct(product);
+                      }}
                       className="py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                     >
                       <Eye className="w-3.5 h-3.5 text-amber-400" />
@@ -180,7 +186,11 @@ export const ProductsSection: React.FC<ProductsSectionProps> = ({
                     </button>
 
                     <button
-                      onClick={() => handleConsult(product)}
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleConsult(product);
+                      }}
                       className="py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-xs font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-md shadow-amber-500/10 active:scale-95"
                     >
                       <Sparkles className="w-3.5 h-3.5" />

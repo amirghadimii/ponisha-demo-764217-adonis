@@ -11,10 +11,10 @@ import {
   TrendingUp, 
   Layers, 
   Check, 
-  ArrowLeft,
-  Info,
-  Maximize2,
-  Receipt
+  ArrowLeft, 
+  Info, 
+  Maximize2, 
+  Receipt 
 } from 'lucide-react';
 import { 
   computeSolarNeeds, 
@@ -31,8 +31,8 @@ interface CalculatorProps {
 
 export const Calculator: React.FC<CalculatorProps> = ({ onApplyToConsultation }) => {
   const [mode, setMode] = useState<'area' | 'bill'>('area');
-  const [roofArea, setRoofArea] = useState<number>(65); // default 65 m2
-  const [monthlyBillToman, setMonthlyBillToman] = useState<number>(3500000); // 3.5M Toman
+  const [roofArea, setRoofArea] = useState<number>(100); // default 100 m2
+  const [monthlyBillToman, setMonthlyBillToman] = useState<number>(5000000); // 5M Toman
   const [selectedCity, setSelectedCity] = useState<string>('تهران');
   const [buildingType, setBuildingType] = useState<string>('residential');
   const [hasBattery, setHasBattery] = useState<boolean>(false);
@@ -95,146 +95,187 @@ export const Calculator: React.FC<CalculatorProps> = ({ onApplyToConsultation })
             
             {/* Input Mode Selector */}
             <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-300 block">روش برآورد اولیه:</label>
+              <label className="text-xs font-bold text-slate-300 block">مبنای اصلی محاسبه نیروگاه:</label>
               <div className="grid grid-cols-2 gap-3 p-1 rounded-2xl bg-slate-900 border border-slate-800">
                 <button
                   type="button"
+                  id="calc-mode-area"
                   onClick={() => setMode('area')}
-                  className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-bold transition-all ${
+                  className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                     mode === 'area'
                       ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 shadow-md'
                       : 'text-slate-400 hover:text-white'
                   }`}
                 >
                   <Maximize2 className="w-4 h-4" />
-                  <span>بر اساس مساحت سقف (m²)</span>
+                  <span>بر اساس مساحت سقف ({toPersianDigits(roofArea)} m²)</span>
                 </button>
 
                 <button
                   type="button"
+                  id="calc-mode-bill"
                   onClick={() => setMode('bill')}
-                  className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-bold transition-all ${
+                  className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                     mode === 'bill'
                       ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 shadow-md'
                       : 'text-slate-400 hover:text-white'
                   }`}
                 >
                   <Receipt className="w-4 h-4" />
-                  <span>بر اساس مبلغ قبض برق</span>
+                  <span>بر اساس قبض برق ({formatNumber(monthlyBillToman)} تومان)</span>
                 </button>
               </div>
             </div>
 
-            {/* Slider & Input based on Mode */}
-            {mode === 'area' ? (
-              <div className="space-y-3 bg-slate-900/50 p-5 rounded-2xl border border-slate-800/60">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-semibold text-slate-300">
+            {/* Input 1: Roof Area with numeric input and slider */}
+            <div className={`space-y-3 p-5 rounded-2xl border transition-all ${
+              mode === 'area' ? 'bg-slate-900/70 border-amber-500/40 ring-1 ring-amber-500/20' : 'bg-slate-900/30 border-slate-800/60 opacity-80'
+            }`}>
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <Maximize2 className="w-4 h-4 text-amber-400" />
+                  <span className="text-sm font-semibold text-slate-200">
                     مساحت مفید پشت‌بام یا زمین بدون سایه:
                   </span>
-                  <div className="flex items-center gap-1.5 bg-slate-950 px-3 py-1.5 rounded-xl border border-slate-700">
-                    <span className="text-lg font-black text-amber-400 font-mono">
-                      {toPersianDigits(roofArea)}
-                    </span>
-                    <span className="text-xs text-slate-400">متر مربع</span>
-                  </div>
                 </div>
-
-                <input
-                  type="range"
-                  min="20"
-                  max="500"
-                  step="5"
-                  value={roofArea}
-                  onChange={(e) => setRoofArea(Number(e.target.value))}
-                  className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500"
-                />
-
-                <div className="flex justify-between text-[11px] text-slate-500 font-mono">
-                  <span>۲۰ مترمربع (حداقل خانگی)</span>
-                  <span>۲۵۰ مترمربع</span>
-                  <span>۵۰۰+ مترمربع (صنعتی)</span>
-                </div>
-
-                {/* Quick Presets */}
-                <div className="flex flex-wrap gap-2 pt-2">
-                  <span className="text-xs text-slate-400 self-center">انتخاب سریع:</span>
-                  {[
-                    { label: 'آپارتمان (۳۵m²)', val: 35 },
-                    { label: 'خانه ویلایی (۷۰m²)', val: 70 },
-                    { label: 'سوله کارگاهی (۱۵۰m²)', val: 150 },
-                    { label: 'کارخانه (۳۰۰m²)', val: 300 },
-                  ].map((preset) => (
-                    <button
-                      key={preset.val}
-                      type="button"
-                      onClick={() => setRoofArea(preset.val)}
-                      className={`text-xs px-2.5 py-1 rounded-lg border transition-colors ${
-                        roofArea === preset.val
-                          ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
-                          : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-white'
-                      }`}
-                    >
-                      {preset.label}
-                    </button>
-                  ))}
+                <div className="flex items-center gap-1.5 bg-slate-950 px-3 py-1.5 rounded-xl border border-slate-700">
+                  <input
+                    id="roof-area-input"
+                    type="number"
+                    min="10"
+                    max="1000"
+                    value={roofArea}
+                    onChange={(e) => {
+                      const val = Number(e.target.value);
+                      if (val >= 0) setRoofArea(val);
+                    }}
+                    className="w-16 bg-transparent text-lg font-black text-amber-400 font-mono text-center focus:outline-none"
+                  />
+                  <span className="text-xs text-slate-400">متر مربع</span>
                 </div>
               </div>
-            ) : (
-              <div className="space-y-3 bg-slate-900/50 p-5 rounded-2xl border border-slate-800/60">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-semibold text-slate-300">
-                    میانگین هزینه قبض ماهانه برق شما:
+
+              <input
+                id="roof-area-slider"
+                type="range"
+                min="20"
+                max="500"
+                step="5"
+                value={roofArea}
+                onChange={(e) => setRoofArea(Number(e.target.value))}
+                className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500"
+              />
+
+              <div className="flex justify-between text-[11px] text-slate-500 font-mono">
+                <span>۲۰ مترمربع</span>
+                <span>۱۰۰ مترمربع</span>
+                <span>۲۵۰ مترمربع</span>
+                <span>۵۰۰+ مترمربع</span>
+              </div>
+
+              {/* Quick Presets */}
+              <div className="flex flex-wrap gap-2 pt-1">
+                <span className="text-xs text-slate-400 self-center">انتخاب سریع:</span>
+                {[
+                  { label: 'آپارتمان (۳۵m²)', val: 35 },
+                  { label: 'خانه ویلایی (۷۰m²)', val: 70 },
+                  { label: 'نیروگاه ۱۰۰ متری (۱۰۰m²)', val: 100 },
+                  { label: 'سوله کارگاهی (۲۰۰m²)', val: 200 },
+                  { label: 'کارخانه صنعتی (۴۰۰m²)', val: 400 },
+                ].map((preset) => (
+                  <button
+                    key={preset.val}
+                    type="button"
+                    onClick={() => {
+                      setRoofArea(preset.val);
+                      setMode('area');
+                    }}
+                    className={`text-xs px-2.5 py-1 rounded-lg border transition-colors cursor-pointer ${
+                      roofArea === preset.val
+                        ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+                        : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-white'
+                    }`}
+                  >
+                    {preset.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Input 2: Monthly Electricity Bill with numeric input and slider */}
+            <div className={`space-y-3 p-5 rounded-2xl border transition-all ${
+              mode === 'bill' ? 'bg-slate-900/70 border-amber-500/40 ring-1 ring-amber-500/20' : 'bg-slate-900/30 border-slate-800/60 opacity-80'
+            }`}>
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <Receipt className="w-4 h-4 text-amber-400" />
+                  <span className="text-sm font-semibold text-slate-200">
+                    میانگین هزینه قبض ماهانه برق:
                   </span>
-                  <div className="flex items-center gap-1.5 bg-slate-950 px-3 py-1.5 rounded-xl border border-slate-700">
-                    <span className="text-lg font-black text-amber-400 font-mono">
-                      {formatNumber(monthlyBillToman)}
-                    </span>
-                    <span className="text-xs text-slate-400">تومان</span>
-                  </div>
                 </div>
-
-                <input
-                  type="range"
-                  min="500000"
-                  max="20000000"
-                  step="500000"
-                  value={monthlyBillToman}
-                  onChange={(e) => setMonthlyBillToman(Number(e.target.value))}
-                  className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500"
-                />
-
-                <div className="flex justify-between text-[11px] text-slate-500 font-mono">
-                  <span>۵۰۰ هزار تومان</span>
-                  <span>۱۰ میلیون تومان</span>
-                  <span>۲۰+ میلیون تومان</span>
-                </div>
-
-                {/* Quick Presets for Bill */}
-                <div className="flex flex-wrap gap-2 pt-2">
-                  <span className="text-xs text-slate-400 self-center">انتخاب سریع:</span>
-                  {[
-                    { label: 'مسکونی معمولی (۱.۵ م)', val: 1500000 },
-                    { label: 'ویلا پرمصرف (۴ م)', val: 4000000 },
-                    { label: 'تجاری/کارگاهی (۸ م)', val: 8000000 },
-                    { label: 'صنعتی/ماده ۱۶ (۱۵ م)', val: 1500000 },
-                  ].map((preset) => (
-                    <button
-                      key={preset.val}
-                      type="button"
-                      onClick={() => setMonthlyBillToman(preset.val)}
-                      className={`text-xs px-2.5 py-1 rounded-lg border transition-colors ${
-                        monthlyBillToman === preset.val
-                          ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
-                          : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-white'
-                      }`}
-                    >
-                      {preset.label}
-                    </button>
-                  ))}
+                <div className="flex items-center gap-1.5 bg-slate-950 px-3 py-1.5 rounded-xl border border-slate-700">
+                  <input
+                    id="monthly-bill-input"
+                    type="number"
+                    min="500000"
+                    max="50000000"
+                    step="500000"
+                    value={monthlyBillToman}
+                    onChange={(e) => {
+                      const val = Number(e.target.value);
+                      if (val >= 0) setMonthlyBillToman(val);
+                    }}
+                    className="w-28 bg-transparent text-base font-black text-amber-400 font-mono text-center focus:outline-none"
+                  />
+                  <span className="text-xs text-slate-400">تومان</span>
                 </div>
               </div>
-            )}
+
+              <input
+                id="monthly-bill-slider"
+                type="range"
+                min="500000"
+                max="20000000"
+                step="500000"
+                value={monthlyBillToman}
+                onChange={(e) => setMonthlyBillToman(Number(e.target.value))}
+                className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500"
+              />
+
+              <div className="flex justify-between text-[11px] text-slate-500 font-mono">
+                <span>۵۰۰ هزار تومان</span>
+                <span>۵ میلیون تومان</span>
+                <span>۱۰ میلیون تومان</span>
+                <span>۲۰+ میلیون تومان</span>
+              </div>
+
+              {/* Quick Presets for Bill */}
+              <div className="flex flex-wrap gap-2 pt-1">
+                <span className="text-xs text-slate-400 self-center">انتخاب سریع:</span>
+                {[
+                  { label: 'مسکونی معمولی (۱.۵ م)', val: 1500000 },
+                  { label: 'قبض ۵ میلیون تومان', val: 5000000 },
+                  { label: 'تجاری/کارگاهی (۸ م)', val: 8000000 },
+                  { label: 'صنعتی پرمصرف (۱۵ م)', val: 15000000 },
+                ].map((preset) => (
+                  <button
+                    key={preset.val}
+                    type="button"
+                    onClick={() => {
+                      setMonthlyBillToman(preset.val);
+                      setMode('bill');
+                    }}
+                    className={`text-xs px-2.5 py-1 rounded-lg border transition-colors cursor-pointer ${
+                      monthlyBillToman === preset.val
+                        ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+                        : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-white'
+                    }`}
+                  >
+                    {preset.label}
+                  </button>
+                ))}
+              </div>
+            </div>
 
             {/* City & Building Type Row */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -246,6 +287,7 @@ export const Calculator: React.FC<CalculatorProps> = ({ onApplyToConsultation })
                   <span className="text-[11px] text-amber-400">شاخص تابش ایران</span>
                 </label>
                 <select
+                  id="calc-city-select"
                   value={selectedCity}
                   onChange={(e) => setSelectedCity(e.target.value)}
                   className="w-full bg-slate-900 border border-slate-700/80 rounded-xl px-3.5 py-3 text-sm text-white focus:outline-none focus:border-amber-500 transition-colors"
@@ -262,6 +304,7 @@ export const Calculator: React.FC<CalculatorProps> = ({ onApplyToConsultation })
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-slate-300 block">نوع کاربری ملک:</label>
                 <select
+                  id="calc-building-select"
                   value={buildingType}
                   onChange={(e) => setBuildingType(e.target.value)}
                   className="w-full bg-slate-900 border border-slate-700/80 rounded-xl px-3.5 py-3 text-sm text-white focus:outline-none focus:border-amber-500 transition-colors"
@@ -277,8 +320,11 @@ export const Calculator: React.FC<CalculatorProps> = ({ onApplyToConsultation })
             </div>
 
             {/* Battery Backup Checkbox Toggle */}
-            <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-start gap-3 cursor-pointer select-none"
-                 onClick={() => setHasBattery(!hasBattery)}>
+            <div 
+              id="calc-battery-toggle"
+              className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-start gap-3 cursor-pointer select-none"
+              onClick={() => setHasBattery(!hasBattery)}
+            >
               <div className={`mt-0.5 w-5 h-5 rounded-md border flex items-center justify-center shrink-0 transition-colors ${
                 hasBattery ? 'bg-amber-500 border-amber-500 text-slate-950' : 'border-slate-600 bg-slate-950'
               }`}>
@@ -312,7 +358,7 @@ export const Calculator: React.FC<CalculatorProps> = ({ onApplyToConsultation })
                   برآورد مهندسی و مالی آدونیس
                 </span>
                 <span className="text-xs font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">
-                  شهر: {selectedCity}
+                  شهر: {selectedCity} • حالت: {mode === 'area' ? 'مساحت سقف' : 'قبض برق'}
                 </span>
               </div>
 
@@ -321,7 +367,7 @@ export const Calculator: React.FC<CalculatorProps> = ({ onApplyToConsultation })
                 <div className="bg-slate-950/80 rounded-2xl p-4 border border-slate-800">
                   <span className="text-xs text-slate-400 block mb-1">ظرفیت پیشنهادی نیروگاه:</span>
                   <div className="flex items-baseline gap-1.5">
-                    <span className="text-3xl font-black text-amber-400 font-mono">
+                    <span id="recommended-capacity-kw" className="text-3xl font-black text-amber-400 font-mono">
                       {toPersianDigits(result.recommendedCapacityKw)}
                     </span>
                     <span className="text-xs font-bold text-slate-300">کیلووات (kW)</span>
@@ -334,7 +380,7 @@ export const Calculator: React.FC<CalculatorProps> = ({ onApplyToConsultation })
                 <div className="bg-slate-950/80 rounded-2xl p-4 border border-slate-800">
                   <span className="text-xs text-slate-400 block mb-1">تعداد پنل‌های مورد نیاز:</span>
                   <div className="flex items-baseline gap-1.5">
-                    <span className="text-3xl font-black text-emerald-400 font-mono">
+                    <span id="panel-count-result" className="text-3xl font-black text-emerald-400 font-mono">
                       {toPersianDigits(result.panelCount)}
                     </span>
                     <span className="text-xs font-bold text-slate-300">عدد پنل ۵۵۰W</span>
@@ -351,7 +397,7 @@ export const Calculator: React.FC<CalculatorProps> = ({ onApplyToConsultation })
                   <span>برآورد هزینه تجهیزات + نصب و راه‌اندازی کامل:</span>
                   <Coins className="w-4 h-4 text-amber-400" />
                 </div>
-                <div className="text-xl sm:text-2xl font-black text-white font-mono">
+                <div id="estimated-cost-range" className="text-xl sm:text-2xl font-black text-white font-mono">
                   {formatNumber(result.estimatedCostMinToman)} تا {formatNumber(result.estimatedCostMaxToman)}
                   <span className="text-xs font-medium text-slate-400 mr-1.5">تومان</span>
                 </div>
@@ -368,7 +414,7 @@ export const Calculator: React.FC<CalculatorProps> = ({ onApplyToConsultation })
                     <TrendingUp className="w-3.5 h-3.5 text-amber-400" />
                     <span>درآمد / صرفه‌جویی سالانه:</span>
                   </div>
-                  <div className="text-base font-black text-amber-300 font-mono">
+                  <div id="annual-saving-result" className="text-base font-black text-amber-300 font-mono">
                     {formatNumber(result.annualSavingToman)}
                     <span className="text-[10px] text-slate-400 mr-1">تومان</span>
                   </div>
@@ -382,7 +428,7 @@ export const Calculator: React.FC<CalculatorProps> = ({ onApplyToConsultation })
                     <Calendar className="w-3.5 h-3.5 text-emerald-400" />
                     <span>دوره بازگشت سرمایه:</span>
                   </div>
-                  <div className="text-base font-black text-emerald-300 font-mono">
+                  <div id="payback-years-result" className="text-base font-black text-emerald-300 font-mono">
                     {toPersianDigits(result.paybackYears)}
                     <span className="text-xs text-slate-400 mr-1">سال</span>
                   </div>
@@ -412,6 +458,7 @@ export const Calculator: React.FC<CalculatorProps> = ({ onApplyToConsultation })
               {/* Apply / Send to Consultation Button */}
               <button
                 type="button"
+                id="apply-calculator-btn"
                 onClick={handleApply}
                 className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-sm sm:text-base shadow-xl shadow-amber-500/25 hover:shadow-amber-500/40 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer active:scale-95"
               >

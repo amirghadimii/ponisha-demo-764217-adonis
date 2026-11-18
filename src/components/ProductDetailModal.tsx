@@ -45,9 +45,10 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   if (!product) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+    <div id="product-detail-modal" className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:p-8">
       {/* Backdrop */}
       <div 
+        id="modal-backdrop"
         className="fixed inset-0 bg-slate-950/80 backdrop-blur-md transition-opacity"
         onClick={onClose}
       />
@@ -69,6 +70,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             )}
           </div>
           <button
+            id="close-modal-btn"
             onClick={onClose}
             className="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors cursor-pointer"
             aria-label="بستن"
@@ -105,7 +107,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                     <Zap className="w-3.5 h-3.5 text-amber-400" />
                     <span>ظرفیت / توان</span>
                   </div>
-                  <div className="font-bold text-white font-mono">{product.capacity}</div>
+                  <div id="modal-product-capacity" className="font-bold text-white font-mono">{product.capacity}</div>
                 </div>
 
                 <div className="p-3 rounded-xl bg-slate-950/70 border border-slate-800">
@@ -113,7 +115,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                     <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
                     <span>گارانتی معتبر</span>
                   </div>
-                  <div className="font-bold text-white text-[11px] leading-tight">{product.warranty}</div>
+                  <div id="modal-product-warranty" className="font-bold text-white text-[11px] leading-tight">{product.warranty}</div>
                 </div>
 
                 {product.efficiency && (
@@ -141,7 +143,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             {/* Description & Price Column */}
             <div className="md:col-span-7 space-y-4">
               <div>
-                <h3 className="text-xl sm:text-2xl font-black text-white leading-snug">
+                <h3 id="modal-product-name" className="text-xl sm:text-2xl font-black text-white leading-snug">
                   {product.name}
                 </h3>
                 <p className="text-xs text-slate-400 font-mono mt-1" dir="ltr">
@@ -176,7 +178,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                         {formatToman(product.originalPriceToman)}
                       </div>
                     )}
-                    <div className="text-xl sm:text-2xl font-black text-amber-400 font-mono">
+                    <div id="modal-product-price" className="text-xl sm:text-2xl font-black text-amber-400 font-mono">
                       {formatToman(product.priceToman)}
                     </div>
                   </div>
@@ -218,7 +220,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               <span className="text-xs text-slate-500">استانداردهای بین‌المللی IEC / TUV / CE</span>
             </div>
 
-            <div className="rounded-2xl border border-slate-800 overflow-hidden bg-slate-950/60">
+            <div id="modal-specs-table" className="rounded-2xl border border-slate-800 overflow-hidden bg-slate-950/60">
               <div className="divide-y divide-slate-800/80">
                 {Object.entries(product.specs).map(([label, val], idx) => (
                   <div
@@ -244,7 +246,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           <span>ارسال فوری به سراسر ایران • ارائه گارانتی رسمی ممهور شرکتی</span>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-white transition-colors"
+            className="text-slate-400 hover:text-white transition-colors cursor-pointer"
           >
             بستن پنجره
           </button>
