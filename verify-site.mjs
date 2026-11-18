@@ -1,9 +1,10 @@
 import puppeteer from 'puppeteer-core';
 
 const chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+const targetUrl = process.env.TEST_URL || 'http://localhost:3009/test/764217-preview';
 
 async function runVerification() {
-  console.log('🚀 Starting Verification on http://localhost:3008 ...');
+  console.log(`🚀 Starting Verification on ${targetUrl} ...`);
   const browser = await puppeteer.launch({
     executablePath: chromePath,
     headless: true,
@@ -20,7 +21,7 @@ async function runVerification() {
   try {
     const page = await browser.newPage();
     await page.setViewport({ width: 1280, height: 900 });
-    await page.goto('http://localhost:3008', { waitUntil: 'networkidle0', timeout: 30000 });
+    await page.goto(targetUrl, { waitUntil: 'networkidle0', timeout: 30000 });
 
     console.log('Page loaded successfully.');
 
@@ -192,7 +193,7 @@ async function runVerification() {
     // ==========================================
     console.log('\n--- Running Test 4: Mobile Menu at mobile viewport ---');
     await page.setViewport({ width: 375, height: 812, isMobile: true });
-    await page.goto('http://localhost:3008', { waitUntil: 'networkidle0' });
+    await page.goto(targetUrl, { waitUntil: 'networkidle0' });
 
     // Open mobile menu
     await page.waitForSelector('#mobile-menu-toggle-btn', { visible: true });

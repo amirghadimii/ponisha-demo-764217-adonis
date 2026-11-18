@@ -13,7 +13,7 @@ const vazirmatn = Vazirmatn({
 export const metadata: Metadata = {
   title: "شرکت انرژی خورشیدی آدونیس | پیشگام نیروگاه‌ها و تجهیزات سولار در ایران",
   description:
-    "شرکت انرژی خورشیدی آدونیس؛ مشاوره، طراحی، فروش تجهیزات Tier-1 و اجرای نیروگاه‌های خورشیدی خانگی، صنعتی و کشاورزی با گارانتی ۲۵ ساله و محاسبه‌گر هوشمند بازدهی و درآمد ساتبا.",
+    "شرکت مهندسی انرژی خورشیدی آدونیس؛ طراحی، تامین تجهیزات Tier-1، احداث نیروگاه‌های خورشیدی مسکونی، صنعتی و کشاورزی با گارانتی ۲۵ ساله و محاسبه‌گر هوشمند سودآوری ساتبا.",
   keywords: [
     "انرژی خورشیدی",
     "پنل خورشیدی",
@@ -26,9 +26,9 @@ export const metadata: Metadata = {
     "باتری لیتیومی خورشیدی",
     "آدونیس سولار",
   ],
-  authors: [{ name: "شرکت انرژی پاک آدونیس" }],
+  authors: [{ name: "شرکت مهندسی آدونیس سولار" }],
   creator: "آدونیس سولار (Adonis Solar)",
-  publisher: "شرکت انرژی پاک آدونیس",
+  publisher: "شرکت مهندسی آدونیس سولار",
   metadataBase: new URL("https://adonis-solar.ir"),
   alternates: {
     canonical: "/",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "آدونیس | راهکارهای هوشمند انرژی خورشیدی و استقلال پایدار برق",
     description:
-      "تامین تجهیزات تراز اول، اجرای صفر تا صد نیروگاه خورشیدی، گارانتی ۲۵ ساله و قرارداد رسمی خرید تضمینی برق وزارت نیرو (ساتبا).",
+      "تامین تجهیزات تراز اول Tier-1، اجرای صفر تا صد نیروگاه خورشیدی، گارانتی ۲۵ ساله و خرید تضمینی ۲۰ ساله ساتبا.",
     url: "https://adonis-solar.ir",
     siteName: "انرژی خورشیدی آدونیس",
     locale: "fa_IR",
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "آدونیس | شرکت مهندسی انرژی خورشیدی",
-    description: "استقلال برق در تابستان و زمستان با نیروگاه‌های خورشیدی با کیفیت آدونیس",
+    description: "استقلال پایدار از قطعی برق و درآمدزایی تضمینی با نیروگاه‌های خورشیدی آدونیس",
     images: ["https://images.unsplash.com/photo-1509391365360-2e959784a276?auto=format&fit=crop&w=1200&q=80"],
   },
   robots: {
@@ -63,7 +63,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0b1120",
+  themeColor: "#ffffff",
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
@@ -79,7 +79,7 @@ export default function RootLayout({
       <head>
         <JsonLd />
       </head>
-      <body className="min-h-screen flex flex-col bg-slate-950 text-slate-100 antialiased selection:bg-amber-500 selection:text-slate-950 overflow-x-hidden w-full max-w-full">
+      <body className="min-h-screen flex flex-col bg-white text-slate-900 antialiased selection:bg-amber-400 selection:text-slate-950 overflow-x-hidden w-full max-w-full">
         {children}
       </body>
     </html>
